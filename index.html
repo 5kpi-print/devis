@@ -67,23 +67,26 @@ thead th{border-bottom-color:#A3A7AC}
   <label>E-mail<input name="email" type="email" required autocomplete="email"></label>
   <label>Téléphone <span>(facultatif)</span><input name="tel" type="tel" autocomplete="tel"></label>
   <label>Votre demande<textarea name="demande" required maxlength="1200" placeholder="Supports, quantités, tailles, date souhaitée…"></textarea></label>
+  <label>Votre logo <span>(facultatif, à joindre au mail à l'étape suivante)</span><input name="logo" type="file" accept="image/*,.pdf,.ai,.eps,.svg"></label>
   <button>Préparer ma demande</button>
-  <p id="ouvert" role="status" hidden>Votre messagerie s'ouvre avec la demande déjà rédigée&nbsp;: joignez votre logo et envoyez. Si rien ne s'ouvre, écrivez à <a href="mailto:atelier5kpi@outlook.fr">atelier5kpi@outlook.fr</a>.</p>
+  <p id="ouvert" role="status" hidden>Votre messagerie s'ouvre avec la demande déjà rédigée&nbsp;: joignez-y votre logo et envoyez. Si rien ne s'ouvre, écrivez à <a href="mailto:atelier5kpi@outlook.fr">atelier5kpi@outlook.fr</a>.</p>
   <p class="note">Vos coordonnées servent uniquement à répondre à cette demande.</p>
 </form>
 <script>
-// ponytail: pas de serveur, la demande part de la messagerie du client ; un service de formulaire si les webmails bloquent trop.
+// ponytail: pas de serveur, le navigateur ne peut pas joindre le logo au mail ; le client le joint lui-même. Un service de formulaire (Tally) pour un vrai dépôt.
 const SUJETS = {club: "Devis club / association", commerce: "Devis commerce / artisan"};
 const sujet = SUJETS[new URLSearchParams(location.search).get("type")] || "Demande de devis";
 document.getElementById("devis").addEventListener("submit", e => {
   e.preventDefault();
   const d = new FormData(e.target);
+  const logo = d.get("logo").name;
   const corps = [
     d.get("demande") + "\r\n",
     "Nom : " + d.get("nom"),
     d.get("structure") && "Structure : " + d.get("structure"),
     "E-mail : " + d.get("email"),
     d.get("tel") && "Téléphone : " + d.get("tel"),
+    logo && "Logo à joindre à ce mail : " + logo,
   ].filter(Boolean).join("\r\n");
   location.href = "mailto:atelier5kpi@outlook.fr?subject=" + encodeURIComponent(sujet) + "&body=" + encodeURIComponent(corps);
   document.getElementById("ouvert").hidden = false;
