@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5kπ Print · Demande de devis</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=Jost:wght@300;400;500&display=swap">
+<style>
+:root{color-scheme:light;--marque:#B3261E;--filet:#A3A7AC}
+*{box-sizing:border-box}
+body{margin:0;font:400 16px/1.55 "Jost","Avenir Next",sans-serif;color:#1E1C18}
+.logo{display:block;width:110px;height:auto;margin:0 auto 14px}
+h1{font-weight:600;font-size:2.5rem;line-height:1.1;margin:0 0 10px;text-align:center}
+.intro{margin:0 0 30px;color:#6A645A;text-align:center}
+label{display:block;margin:0 0 18px;font-size:.85rem;font-weight:500}
+label span{font-weight:400;color:#6A645A}
+input,textarea{display:block;width:100%;margin-top:6px;padding:12px;font:inherit;font-size:16px;font-weight:400;color:#1E1C18;background:#fff;border:1px solid #DFD9CD;border-radius:2px}
+input:focus,textarea:focus{outline:2px solid var(--marque);outline-offset:1px}
+textarea{min-height:170px;resize:vertical}
+button{display:block;width:100%;padding:16px;font:600 13px/1 "Jost",Arial,sans-serif;letter-spacing:2px;text-transform:uppercase;color:#fff;background:var(--marque);border:0;border-radius:2px;cursor:pointer}
+button:hover{background:#94201A}
+.note{margin:18px 0 0;font-size:.8rem;color:#6A645A;text-align:center}
+.note a{color:#1E1C18}
+#ouvert{margin:18px 0 0;padding:14px;font-size:.92rem;color:#3F6B45;border:1px solid #3F6B45;border-radius:2px}
+/* 5kpi:feuille début — ne pas modifier ici, voir style/feuille.css */
+/* Style « présentation » : fond nuit, feuille papier, halos C/M/J, filet argenté, pied.
+   Source : presentation/presentation-de-la-marque.html. body = conteneur de la feuille. */
+h1,h2,h3{font-family:"Cormorant Garamond",Garamond,"Times New Roman",serif}
+h1 em,h2 em,h3 em{font-style:italic;font-weight:400;color:var(--marque-texte,#B3261E)}
+.eyebrow{letter-spacing:.34em;color:#6A645A}
+thead th{border-bottom-color:#A3A7AC}
+@media screen{
+  html{background:#0B1222;padding:28px 16px 64px;color-scheme:light}
+  body{background-color:transparent}
+  body{
+    position:relative;max-width:36rem;margin-inline:auto;padding:56px 48px 80px;
+    background-color:#F7F5F1;
+    background-image:
+      radial-gradient(700px 520px at 0 0,rgb(0 174 239 / .17),transparent 70%),
+      radial-gradient(700px 520px at 100% 100%,rgb(236 0 140 / .17),transparent 70%),
+      radial-gradient(520px 400px at 100% 0,rgb(255 242 0 / .17),transparent 70%);
+    background-repeat:no-repeat;
+    box-shadow:0 20px 50px -24px rgba(0,0,0,.6);
+  }
+  body::after{content:"";position:absolute;inset:16px;border:1px solid #A3A7AC;opacity:.85;pointer-events:none}
+  body::before{
+    content:"5kπ Print · Vitry-sur-Seine";position:absolute;left:48px;bottom:30px;
+    font:400 10px/1 "Jost","Avenir Next",sans-serif;letter-spacing:.34em;text-transform:uppercase;color:#1E1C18;opacity:.6;
+  }
+}
+@media screen and (max-width:760px){
+  html{padding:10px 0 24px}
+  body{padding:36px 22px 64px}
+  body::after{inset:8px}
+  body::before{left:22px;bottom:24px}
+}
+/* 5kpi:feuille fin */
+</style>
+</head>
+<body>
+<img class="logo" src="logo-encre-noire.png" alt="5kπ Print">
+<h1>Demander <em>un devis</em></h1>
+<p class="intro">Vos coordonnées et votre projet&nbsp;: on revient vers vous avec une maquette et un prix.</p>
+<form id="devis">
+  <label>Nom et prénom<input name="nom" required autocomplete="name"></label>
+  <label>Club, association ou entreprise <span>(facultatif)</span><input name="structure" autocomplete="organization"></label>
+  <label>E-mail<input name="email" type="email" required autocomplete="email"></label>
+  <label>Téléphone <span>(facultatif)</span><input name="tel" type="tel" autocomplete="tel"></label>
+  <label>Votre demande<textarea name="demande" required maxlength="1200" placeholder="Supports, quantités, tailles, date souhaitée…"></textarea></label>
+  <button>Préparer ma demande</button>
+  <p id="ouvert" role="status" hidden>Votre messagerie s'ouvre avec la demande déjà rédigée&nbsp;: joignez votre logo et envoyez. Si rien ne s'ouvre, écrivez à <a href="mailto:atelier5kpi@outlook.fr">atelier5kpi@outlook.fr</a>.</p>
+  <p class="note">Vos coordonnées servent uniquement à répondre à cette demande.</p>
+</form>
+<script>
+// ponytail: pas de serveur, la demande part de la messagerie du client ; un service de formulaire si les webmails bloquent trop.
+const SUJETS = {club: "Devis club / association", commerce: "Devis commerce / artisan"};
+const sujet = SUJETS[new URLSearchParams(location.search).get("type")] || "Demande de devis";
+document.getElementById("devis").addEventListener("submit", e => {
+  e.preventDefault();
+  const d = new FormData(e.target);
+  const corps = [
+    d.get("demande") + "\r\n",
+    "Nom : " + d.get("nom"),
+    d.get("structure") && "Structure : " + d.get("structure"),
+    "E-mail : " + d.get("email"),
+    d.get("tel") && "Téléphone : " + d.get("tel"),
+  ].filter(Boolean).join("\r\n");
+  location.href = "mailto:atelier5kpi@outlook.fr?subject=" + encodeURIComponent(sujet) + "&body=" + encodeURIComponent(corps);
+  document.getElementById("ouvert").hidden = false;
+});
+</script>
+</body>
+</html>
