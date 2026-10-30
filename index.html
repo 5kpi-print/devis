@@ -15,6 +15,7 @@ h1{font-weight:600;font-size:2.5rem;line-height:1.1;margin:0 0 10px;text-align:c
 iframe{display:block;border:0}
 .note{margin:18px 0 0;font-size:.8rem;color:#6A645A;text-align:center}
 .note a{color:#1E1C18}
+#merci{margin:0;padding:18px;color:#3F6B45;text-align:center;border:1px solid #3F6B45;border-radius:2px}
 /* 5kpi:feuille début — ne pas modifier ici, voir style/feuille.css */
 /* Style « présentation » : fond nuit, feuille papier, halos C/M/J, filet argenté, pied.
    Source : presentation/presentation-de-la-marque.html. body = conteneur de la feuille. */
@@ -56,6 +57,15 @@ thead th{border-bottom-color:#A3A7AC}
 <p class="intro">Vos coordonnées et votre projet&nbsp;: on revient vers vous avec une maquette et un prix.</p>
 <iframe data-tally-src="https://tally.so/embed/J1qKRd?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="760" frameborder="0" marginheight="0" marginwidth="0" title="Formulaire de demande de devis"></iframe>
 <p class="note">Vos coordonnées et votre logo sont conservés chez Tally (Union européenne) et servent uniquement à répondre à cette demande.<br>Un souci avec le formulaire&nbsp;? Écrivez à <a href="mailto:atelier5kpi@outlook.fr">atelier5kpi@outlook.fr</a>.</p>
+<p id="merci" role="status" hidden>Merci, votre demande est bien envoyée.<br>On revient vers vous avec une maquette et un devis.</p>
+<script>
+addEventListener("message", e => {
+  if (e.origin !== "https://tally.so" || !String(e.data).includes("Tally.FormSubmitted")) return;
+  document.querySelector("iframe").remove();
+  document.getElementById("merci").hidden = false;
+  scrollTo(0, 0);
+});
+</script>
 <script src="https://tally.so/widgets/embed.js" onload="Tally.loadEmbeds()"></script>
 </body>
 </html>
